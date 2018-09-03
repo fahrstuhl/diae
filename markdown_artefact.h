@@ -15,20 +15,20 @@ public:
   QString text() { return m_text; };
 
 public slots:
-  void setText(const QString &text) {
-    m_text = text;
-    qInfo("%s", m_text.toUtf8().constData());
-  }
-
+  void setText(const QString &text);
 signals:
   void isFreeChanged(const bool &isFree);
   void textChanged(const QString &text);
 
-private:
+protected:
   void loadFromFile(const QUrl &fileUrl);
   void createNewFile(const QUrl &fileUrl);
   void createTempFile();
   void setFile(QFile *file);
+
+private:
+  void saveToFile();
+  void readFromFile();
   bool m_isFree;
   QString m_text;
 };

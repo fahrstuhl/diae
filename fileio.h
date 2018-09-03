@@ -1,7 +1,11 @@
 #ifndef FILEIO_H
 #define FILEIO_H
 
+#include <QFile>
 #include <QObject>
+
+QString readTextFromFile(QFile &file);
+void saveTextToFile(QString &text, QFile &file);
 
 class FileIO : public QObject {
   Q_OBJECT
