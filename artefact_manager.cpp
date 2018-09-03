@@ -13,7 +13,7 @@ void ArtefactManager::loadArtefact(const QUrl &fileUrl) {
     QFileInfo fileInfo = QFileInfo(fileUrl.path());
     QString extension = fileInfo.suffix();
     if (extension == "md") {
-      QSharedPointer<Artefact> artefact =
+      QSharedPointer<MarkdownArtefact> artefact =
           QSharedPointer<MarkdownArtefact>::create(fileUrl);
       artefact_dict[fileUrl] = artefact;
     } else {
@@ -44,8 +44,9 @@ QUrl ArtefactManager::createArtefact(const QString extension) {
   if (extension == "md") {
     QSharedPointer<MarkdownArtefact> artefact =
         QSharedPointer<MarkdownArtefact>::create();
-    const QUrl fileUrl = artefact->fileUrl();
+    const QUrl fileUrl = artefact->url();
     artefact_dict[fileUrl] = artefact;
+    qInfo() << "markdown artefact with url: " << fileUrl << " created.";
     return fileUrl;
   } else {
     qInfo() << "invalid file extension: " << extension;
@@ -55,8 +56,7 @@ QUrl ArtefactManager::createArtefact(const QString extension) {
 }
 
 bool ArtefactManager::isValidFile(const QUrl &fileUrl) {
-  bool isFileUrl = fileUrl.scheme() == "file://";
-  if (isFileUrl or fileUrl.isRelative()) {
+  if (fileUrl.isLocalFile() or fileUrl.isRelative()) {
     QFileInfo fileInfo = QFileInfo(fileUrl.path());
     QDir directory = QDir(fileInfo.canonicalPath());
     if (directory.exists()) {
