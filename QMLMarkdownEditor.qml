@@ -2,25 +2,30 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.11
 import QtQuick.Controls 2.1
 import Qt.labs.platform 1.0
-import MarkdownArtefact 1.0
+import MarkdownEditor 1.0
 
 ColumnLayout{
-    id: top
-    //property  document
-    Text {
-        text: top.document.fileUrl
+    MarkdownEditor{
+        id: editor
+        onUrlChanged: textArea.text = text
+        onTextChanged: {
+            if (!textArea.activeFocus) {
+                textArea.text = text
+            }
+        }
     }
-
     TextArea {
-        id: area
-        text: top.document.text
-        readOnly: top.document.isInUse
+        id: urlArea
+        text: editor.url
+        Keys.onReturnPressed: editor.openArtefact(text)
     }
-
-    Binding {
-        target: top.current_document1
-        when: !top.document.isInUse
-        property: "text"
-        value: area1.text
+    TextArea {
+        id: textArea
+        text: editor.text
+        onTextChanged:{
+            if (activeFocus) {
+                editor.setText(text)
+            }
+        }
     }
 }
