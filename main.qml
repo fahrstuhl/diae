@@ -7,16 +7,11 @@ import Qt.labs.platform 1.0
 
 Window {
     visible: true
-    width: 640
-    height: 480
+    width: 1920
+    height: 1080
     title: qsTr("DIAE")
-    RowLayout {
-        id: top
-        QMLMarkdownEditor{
-            id: editor1
-        }
-        QMLMarkdownEditor{
-            id: editor2
-        }
+
+    DIAEContainer {
+        id: root
     }
 }
