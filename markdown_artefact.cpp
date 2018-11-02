@@ -1,5 +1,6 @@
 #include "markdown_artefact.h"
 #include "fileio.h"
+#include "markdown.h"
 #include <QTemporaryFile>
 
 MarkdownArtefact::MarkdownArtefact(const QUrl &fileUrl, QObject *parent)
@@ -46,3 +47,5 @@ void MarkdownArtefact::readFromFile() {
   QString text = readTextFromFile(*m_file);
   setText(text);
 }
+
+QString MarkdownArtefact::toHTML() { return convert_markdown_to_html(m_text); }

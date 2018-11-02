@@ -11,8 +11,10 @@ public:
   explicit MarkdownEditor(QObject *parent = nullptr);
   ~MarkdownEditor();
   Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
+  Q_PROPERTY(QString html READ html)
   Q_PROPERTY(QUrl url READ url NOTIFY urlChanged)
   QString text() { return current_artefact->text(); };
+  QString html() { return current_artefact->html(); };
   QUrl url() { return current_artefact_url; };
 
 public slots:

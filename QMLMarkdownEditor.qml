@@ -11,7 +11,7 @@ Frame {
             onUrlChanged: textArea.text = text
             onTextChanged: {
                 if (!textArea.activeFocus) {
-                    textArea.text = text
+                    textArea.text = html;
                 }
             }
         }
@@ -23,8 +23,21 @@ Frame {
         TextArea {
             id: textArea
             text: editor.text
-            onTextChanged:{
+            onActiveFocusChanged: {
                 if (activeFocus) {
+                    textFormat = TextEdit.PlainText;
+                    text = editor.text;
+                    readOnly = false;
+                }
+                else {
+                    textFormat = TextEdit.RichText;
+                    text = editor.html;
+                    readOnly = true;
+                }
+            }
+
+            onTextChanged:{
+                if (activeFocus && textFormat == TextEdit.PlainText) {
                     editor.setText(text)
                 }
             }

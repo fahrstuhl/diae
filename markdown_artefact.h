@@ -11,8 +11,10 @@ public:
   ~MarkdownArtefact();
   Q_PROPERTY(bool isFree READ isFree NOTIFY isFreeChanged)
   Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
+  Q_PROPERTY(QString html READ html)
   bool isFree() { return m_isFree; };
   QString text() { return m_text; };
+  QString html() { return toHTML(); };
 
 public slots:
   void setText(const QString &text);
@@ -29,6 +31,7 @@ protected:
 private:
   void saveToFile();
   void readFromFile();
+  QString toHTML();
   bool m_isFree;
   QString m_text;
 };
