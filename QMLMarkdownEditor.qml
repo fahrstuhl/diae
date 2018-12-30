@@ -8,7 +8,10 @@ Frame {
     ColumnLayout{
         MarkdownEditor{
             id: editor
-            onUrlChanged: textArea.text = text
+            onUrlChanged: {
+                textArea.text = text;
+                textArea.decideIfEditable();
+            }
             onTextChanged: {
                 if (!textArea.activeFocus) {
                     textArea.text = html;
@@ -21,19 +24,34 @@ Frame {
             Keys.onReturnPressed: editor.openArtefact(text)
         }
         TextArea {
-            id: textArea
-            text: editor.text
-            onActiveFocusChanged: {
+            function setPlaintext() {
+                textFormat = TextEdit.PlainText;
+                text = editor.text;
+                readOnly = false;
+            }
+            function setRichtext() {
+                textFormat = TextEdit.RichText;
+                text = editor.html;
+                readOnly = true;
+            }
+            function decideIfEditable() {
                 if (activeFocus) {
-                    textFormat = TextEdit.PlainText;
-                    text = editor.text;
-                    readOnly = false;
+                     setPlaintext();
                 }
                 else {
-                    textFormat = TextEdit.RichText;
-                    text = editor.html;
-                    readOnly = true;
+                     setRichtext();
                 }
+
+            }
+
+            id: textArea
+            text: editor.text
+            Component.onCompleted: {
+                decideIfEditable();
+            }
+
+            onActiveFocusChanged: {
+                decideIfEditable();
             }
 
             onTextChanged:{
