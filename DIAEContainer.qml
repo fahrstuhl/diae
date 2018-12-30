@@ -29,6 +29,7 @@ Frame {
             nodes.push(node);
             node.widthChanged.connect(update);
             node.heightChanged.connect(update);
+            node.close.connect(close);
         }
         function calculateSize(state) {
             var w = 0;

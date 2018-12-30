@@ -6,6 +6,7 @@ import QtQuick.Dialogs 1.0
 import MarkdownEditor 1.0
 
 Frame {
+    id: top
     ColumnLayout{
         MarkdownEditor{
             id: editor
@@ -19,6 +20,7 @@ Frame {
                 }
             }
         }
+        RowLayout{
         Button {
             text: "open file"
             onClicked: fileDialog.visible = true;
@@ -28,6 +30,11 @@ Frame {
             id: urlArea
             text: editor.url
             Keys.onReturnPressed: editor.openArtefact(text);
+        }
+        Button {
+            text: "close editor"
+            onClicked: top.destroy()
+        }
         }
         FileDialog {
             id: fileDialog
