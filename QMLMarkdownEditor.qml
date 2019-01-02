@@ -75,6 +75,7 @@ Frame {
 
             id: textArea
             text: editor.text
+            wrapMode: TextEdit.Wrap
             Component.onCompleted: {
                 decideIfEditable();
             }
