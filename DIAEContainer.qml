@@ -4,6 +4,7 @@ import QtQuick.Controls 2.4
 
 Frame {
     id: frame
+    property bool deleted: false
     ColumnLayout {
         id: top
         property var nodes: []
@@ -18,6 +19,7 @@ Frame {
             nodes.push(node);
             node.widthChanged.connect(update);
             node.heightChanged.connect(update);
+            node.deletedChanged.connect(update);
         }
         function createContainerObjects() {
             var component = Qt.createComponent("DIAEContainer.qml");
@@ -29,7 +31,7 @@ Frame {
             nodes.push(node);
             node.widthChanged.connect(update);
             node.heightChanged.connect(update);
-            node.close.connect(close);
+            node.deletedChanged.connect(update);
         }
         function calculateSize(state) {
             var w = 0;
@@ -54,7 +56,13 @@ Frame {
         onUpdate: {
             console.log("state:", layout.state);
             for (var i = 0; i < nodes.length; i++) {
-                console.log("item: ", nodes[i], "; parent: ", nodes[i].parent, "; layout: ", layout);
+                console.log("#", i, "; deleted: ", nodes[i].deleted, "; item: ", nodes[i], "; type: ", typeof nodes[i], "; parent: ", nodes[i].parent, "; layout: ", layout);
+                if (nodes[i].deleted) {
+                    nodes[i].destroy();
+                    nodes.splice(i,1);
+                    i--;
+                    continue;
+                }
                 switch(layout.state) {
                 case 0:
                     console.log("row: ", row);
@@ -77,7 +85,12 @@ Frame {
             frame.contentWidth = top.width;
             frame.contentHeight = top.height;
             console.log("frame width: ", frame.width, "; frame height: ", frame.height);
+        }
 
+        Component.onDestruction: {
+            for (var i = 0; i < nodes.length; i++) {
+                nodes[i].destroy();
+            }
         }
 
         RowLayout {
@@ -102,6 +115,10 @@ Frame {
                     top.createContainerObjects();
                     top.update()
                 }
+            }
+            Button {
+                text: "close container"
+                onClicked: frame.deleted = true
             }
         }
         Item {

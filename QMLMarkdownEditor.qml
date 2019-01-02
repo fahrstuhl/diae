@@ -6,7 +6,8 @@ import QtQuick.Dialogs 1.0
 import MarkdownEditor 1.0
 
 Frame {
-    id: top
+    id: frame
+    property bool deleted: false
     ColumnLayout{
         MarkdownEditor{
             id: editor
@@ -33,7 +34,7 @@ Frame {
         }
         Button {
             text: "close editor"
-            onClicked: top.destroy()
+            onClicked: frame.deleted = true
         }
         }
         FileDialog {
