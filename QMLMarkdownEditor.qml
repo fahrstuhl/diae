@@ -8,7 +8,11 @@ import MarkdownEditor 1.0
 Frame {
     id: frame
     property bool deleted: false
+    property real relWidth: 1
+    property real relHeight: 0.9
+    Layout.margins: 5
     ColumnLayout{
+        anchors.fill: parent
         MarkdownEditor{
             id: editor
             onUrlChanged: {
@@ -76,6 +80,8 @@ Frame {
             id: textArea
             text: editor.text
             wrapMode: TextEdit.Wrap
+            Layout.fillHeight: true
+            Layout.fillWidth: true
             Component.onCompleted: {
                 decideIfEditable();
             }

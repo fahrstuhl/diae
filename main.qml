@@ -13,5 +13,9 @@ Window {
 
     DIAEContainer {
         id: root
+        width: parent.width
+        height: parent.height
+        contentWidth: availableWidth
+        contentHeight: availableHeight
     }
 }
