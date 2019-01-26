@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.11
-import QtQuick.Controls 2.1
+import QtQuick.Controls 2.5
 import Qt.labs.platform 1.0
 import QtQuick.Dialogs 1.0
 import MarkdownEditor 1.0
@@ -9,8 +9,7 @@ Frame {
     id: frame
     property bool deleted: false
     property real relWidth: 1
-    property real relHeight: 0.9
-    Layout.margins: 5
+    property real relHeight: 1
     ColumnLayout{
         anchors.fill: parent
         MarkdownEditor{
@@ -26,20 +25,20 @@ Frame {
             }
         }
         RowLayout{
-        Button {
-            text: "open file"
-            onClicked: fileDialog.visible = true;
-        }
+            Button {
+                text: "open file"
+                onClicked: fileDialog.visible = true;
+            }
 
-        TextArea {
-            id: urlArea
-            text: editor.url
-            Keys.onReturnPressed: editor.openArtefact(text);
-        }
-        Button {
-            text: "close editor"
-            onClicked: frame.deleted = true
-        }
+            TextArea {
+                id: urlArea
+                text: editor.url
+                Keys.onReturnPressed: editor.openArtefact(text);
+            }
+            Button {
+                text: "close editor"
+                onClicked: frame.deleted = true
+            }
         }
         FileDialog {
             id: fileDialog
@@ -56,43 +55,48 @@ Frame {
             }
         }
 
-        TextArea {
-            function setPlaintext() {
-                textFormat = TextEdit.PlainText;
-                text = editor.text;
-                readOnly = false;
-            }
-            function setRichtext() {
-                textFormat = TextEdit.RichText;
-                text = editor.html;
-                readOnly = true;
-            }
-            function decideIfEditable() {
-                if (activeFocus) {
-                     setPlaintext();
-                }
-                else {
-                     setRichtext();
-                }
-
-            }
-
-            id: textArea
-            text: editor.text
-            wrapMode: TextEdit.Wrap
+        ScrollView{
             Layout.fillHeight: true
             Layout.fillWidth: true
-            Component.onCompleted: {
-                decideIfEditable();
-            }
+            contentWidth: availableWidth
+            contentHeight: availableHeight
+            TextArea {
+                function setPlaintext() {
+                    textFormat = TextEdit.PlainText;
+                    text = editor.text;
+                    readOnly = false;
+                }
+                function setRichtext() {
+                    textFormat = TextEdit.RichText;
+                    text = editor.html;
+                    readOnly = true;
+                }
+                function decideIfEditable() {
+                    if (activeFocus) {
+                        setPlaintext();
+                    }
+                    else {
+                        setRichtext();
+                    }
 
-            onActiveFocusChanged: {
-                decideIfEditable();
-            }
+                }
 
-            onTextChanged:{
-                if (activeFocus && textFormat == TextEdit.PlainText) {
-                    editor.setText(text)
+                id: textArea
+                text: editor.text
+                anchors.fill: parent
+                wrapMode: TextEdit.Wrap
+                Component.onCompleted: {
+                    decideIfEditable();
+                }
+
+                onActiveFocusChanged: {
+                    decideIfEditable();
+                }
+
+                onTextChanged:{
+                    if (activeFocus && textFormat == TextEdit.PlainText) {
+                        editor.setText(text)
+                    }
                 }
             }
         }

@@ -7,7 +7,7 @@ Frame {
     property var nodes: []
     property bool deleted: false
     property real relWidth: 1
-    property real relHeight: 0.9
+    property real relHeight: 1
     signal update
     function createObject(component) {
         var node = component.createObject(root);
@@ -32,7 +32,6 @@ Frame {
     }
 
     function calculateRelativeSize(state){
-        console.log("calculating relative size");
         var n = nodes.length;
         for (var i=0; i < nodes.length; i++) {
             switch(state){
