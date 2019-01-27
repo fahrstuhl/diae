@@ -43,15 +43,15 @@ Frame {
         FileDialog {
             id: fileDialog
             title: "Select file to edit."
-            folder: editor.getPath()
+            //folder: editor.getPath()
             selectExisting: false
             nameFilters: ["Markdown files: (*.md, *.txt)", "All files: (*)"]
             onAccepted: {
                 editor.openArtefact(fileDialog.fileUrl);
-                visible = false;
+                close();
             }
             onRejected: {
-                visible = false;
+                close();
             }
         }
 
