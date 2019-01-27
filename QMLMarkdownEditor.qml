@@ -1,8 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.11
 import QtQuick.Controls 2.5
-import Qt.labs.platform 1.0
-import QtQuick.Dialogs 1.0
+import QtQuick.Dialogs 1.3
 import MarkdownEditor 1.0
 
 Frame {
@@ -27,7 +26,7 @@ Frame {
         RowLayout{
             Button {
                 text: "open file"
-                onClicked: fileDialog.visible = true;
+                onClicked: fileDialog.open();
             }
 
             TextArea {
@@ -40,6 +39,7 @@ Frame {
                 onClicked: frame.deleted = true
             }
         }
+
         FileDialog {
             id: fileDialog
             title: "Select file to edit."
@@ -83,7 +83,7 @@ Frame {
 
                 id: textArea
                 text: editor.text
-                anchors.fill: parent
+                width: parent.availableWidth
                 wrapMode: TextEdit.Wrap
                 Component.onCompleted: {
                     decideIfEditable();

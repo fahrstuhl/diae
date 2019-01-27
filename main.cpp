@@ -2,9 +2,14 @@
 #include "register_types.h"
 #include <QQmlApplicationEngine>
 #include <QQuickStyle>
+#include <QSettings>
 
 int main(int argc, char *argv[]) {
   DiaeApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+  DiaeApplication::setOrganizationName("what.re");
+  DiaeApplication::setOrganizationDomain("what.re");
+  DiaeApplication::setApplicationName("DIAE");
+  QSettings::setDefaultFormat(QSettings::IniFormat);
 
   DiaeApplication app(argc, argv);
 

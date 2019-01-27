@@ -16,8 +16,8 @@ Frame {
             console.log("Error creating object");
         }
         nodes.push(node);
-        node.widthChanged.connect(update);
-        node.heightChanged.connect(update);
+        //node.widthChanged.connect(update);
+        //node.heightChanged.connect(update);
         node.deletedChanged.connect(update);
         node.parent = layout;
     }
@@ -50,6 +50,11 @@ Frame {
             }
             nodes[i].Layout.preferredWidth = nodes[i].relWidth * availableWidth;
             nodes[i].Layout.preferredHeight = nodes[i].relHeight * availableHeight;
+            nodes[i].Layout.maxWidth = 0.9*availableWidth;
+            nodes[i].Layout.maxHeight = 0.9*availableHeight;
+            if (state == 2) {
+                console.log(nodes[i].Layout.preferredWidth, nodes[i].Layout.preferredHeight);
+            }
         }
     }
 

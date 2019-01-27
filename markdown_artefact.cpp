@@ -15,26 +15,6 @@ MarkdownArtefact::MarkdownArtefact(QObject *parent)
 
 MarkdownArtefact::~MarkdownArtefact() {}
 
-void MarkdownArtefact::loadFromFile(const QUrl &fileUrl) {
-  setFile(new QFile(fileUrl.path(), this));
-  readFromFile();
-};
-void MarkdownArtefact::createNewFile(const QUrl &fileUrl) {
-  setFile(new QFile(fileUrl.path(), this));
-};
-void MarkdownArtefact::createTempFile() {
-  QTemporaryFile *file = new QTemporaryFile(this);
-  file->open(); // generates unique filename
-  file->close();
-  setFile(file);
-};
-void MarkdownArtefact::setFile(QFile *file) {
-  // TODO: handle many cases when changing file
-  // there won't be any changing files of a single artefact,
-  // it can only be moved on a rename
-  m_file = file;
-}
-
 void MarkdownArtefact::setText(const QString &text) {
   m_text = text;
   qInfo("%s", m_text.toUtf8().constData());

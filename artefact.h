@@ -22,14 +22,14 @@ signals:
 protected:
   explicit Artefact(const QUrl &fileUrl, QObject *parent = nullptr);
   explicit Artefact(QObject *parent = nullptr);
-  virtual void loadFromFile(const QUrl &fileUrl);
-  virtual void createNewFile(const QUrl &fileUrl);
-  virtual void createTempFile();
-  virtual void setFile(QFile *file);
-  virtual void saveToFile();
-  virtual void readFromFile();
-  void fromUrl(const QUrl &fileUrl);
-  void fromTemp();
+  void loadFromFile(const QUrl &fileUrl);
+  void createNewFile(const QUrl &fileUrl);
+  void createTempFile();
+  void setFile(QFile *file);
+  virtual void saveToFile() = 0;
+  virtual void readFromFile() = 0;
+  virtual void fromUrl(const QUrl &fileUrl);
+  virtual void fromTemp();
   bool fileExists(const QUrl &fileUrl);
   QUrl m_fileUrl;
   QFile *m_file;
