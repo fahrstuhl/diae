@@ -9,9 +9,8 @@ ArtefactManager::ArtefactManager(QObject *parent) : QObject(parent) {}
 
 void ArtefactManager::loadArtefact(const QUrl &fileUrl) {
   qInfo() << "loading file " << fileUrl;
-  if (isValidFile(fileUrl)) {
-    QFileInfo fileInfo = QFileInfo(fileUrl.path());
-    QString extension = fileInfo.suffix();
+  if (isValidArtefactURL(fileUrl)) {
+    QString extension = getExtension(fileUrl);
     if (extension == "md") {
       QSharedPointer<MarkdownArtefact> artefact =
           QSharedPointer<MarkdownArtefact>::create(fileUrl);
@@ -26,6 +25,26 @@ void ArtefactManager::loadArtefact(const QUrl &fileUrl) {
     // TODO: emit error
     return;
   }
+}
+
+bool ArtefactManager::isValidArtefactURL(const QUrl &fileUrl) {
+  if (isValidFile(fileUrl)) {
+    QString extension = getExtension(fileUrl);
+    return isValidArtefactType(extension);
+  } else {
+    return false;
+  }
+}
+
+QString ArtefactManager::getExtension(const QUrl &fileUrl) {
+  QFileInfo fileInfo = QFileInfo(fileUrl.path());
+  QString extension = fileInfo.suffix();
+  return extension;
+}
+
+bool ArtefactManager::isValidArtefactType(const QString extension) {
+  // TODO: more generic artefact type handling
+  return extension == "md";
 }
 
 void ArtefactManager::getArtefact(const QUrl &fileUrl) {
