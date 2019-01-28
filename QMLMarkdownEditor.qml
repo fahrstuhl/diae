@@ -25,6 +25,11 @@ Frame {
         }
         RowLayout{
             Button {
+                text: "edit"
+                onClicked: textArea.edit()
+            }
+
+            Button {
                 text: "open file"
                 onClicked: fileDialog.open();
             }
@@ -61,6 +66,11 @@ Frame {
             contentWidth: availableWidth
             contentHeight: availableHeight
             TextArea {
+                function edit() {
+                    focus=true;
+                    setPlaintext();
+                }
+
                 function setPlaintext() {
                     textFormat = TextEdit.PlainText;
                     text = editor.text;
@@ -85,18 +95,25 @@ Frame {
                 text: editor.text
                 width: parent.availableWidth
                 wrapMode: TextEdit.Wrap
+                selectByMouse: true
                 Component.onCompleted: {
-                    decideIfEditable();
+                    edit();
                 }
 
                 onActiveFocusChanged: {
-                    decideIfEditable();
+                    if (!activeFocus) {
+                        setRichtext();
+                    }
                 }
 
                 onTextChanged:{
                     if (activeFocus && textFormat == TextEdit.PlainText) {
                         editor.setText(text)
                     }
+                }
+
+                onLinkActivated: {
+                    console.log("Link ", link, " clicked.");
                 }
             }
         }
