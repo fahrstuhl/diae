@@ -9,7 +9,7 @@ QString convert_markdown_to_html(QString markdown) {
    * parser = cmark_parser_new(options)
    * cmark_parser_attach_syntax_extension(parser, syntax_extension)
    * S_parser_feed(parser, buffer, len, true)
-   * document = cmark_parser_finisch(parser)
+   * document = cmark_parser_finish(parser)
    * cmark_parser_free(parser)
    * result = cmark_render_html(document, options, parser->syntax_extensions)
    * cmark_node_free(document)
