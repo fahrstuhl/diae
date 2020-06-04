@@ -24,7 +24,7 @@ void saveTextToFile(QString &text, QFile &file) {
   } else {
 
     QTextStream out(&file);
-    out << text << endl;
+    out << text << Qt::endl;
 
     file.close();
   }
@@ -61,7 +61,7 @@ bool FileIO::write(const QString &data) {
     return false;
 
   QTextStream out(&file);
-  out << data << endl;
+  out << data << Qt::endl;
 
   file.close();
 
