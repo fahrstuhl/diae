@@ -14,7 +14,7 @@ public:
   QUrl url() { return m_fileUrl; };
 
 public slots:
-  void renameTo(const QUrl &newUrl);
+  bool renameTo(const QUrl &newUrl);
 
 signals:
   void urlChanged(const QUrl &oldUrl, const QUrl &newUrl);
@@ -26,8 +26,8 @@ protected:
   void createNewFile(const QUrl &fileUrl);
   void createTempFile();
   void setFile(QFile *file);
-  virtual void saveToFile() = 0;
-  virtual void readFromFile() = 0;
+  virtual void saveToFile();
+  virtual void readFromFile();
   virtual void fromUrl(const QUrl &fileUrl);
   virtual void fromTemp();
   bool fileExists(const QUrl &fileUrl);

@@ -37,3 +37,8 @@ void MarkdownEditor::artefactOpened(const QUrl &fileUrl,
     qInfo() << "artefact opened with text: " << text();
   }
 }
+
+bool MarkdownEditor::isMyArtefactType(const QUrl &fileUrl) {
+  QString extension = ArtefactManager::getExtension(fileUrl);
+  return supported_extensions.contains(extension);
+}

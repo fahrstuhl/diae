@@ -10,7 +10,8 @@ class ArtefactManager : public QObject {
 public:
   explicit ArtefactManager(QObject *parent = nullptr);
   QUrl createArtefact(const QString extension);
-  bool isValidArtefactURL(const QUrl &fileUrl);
+  static bool isValidArtefactURL(const QUrl &fileUrl);
+  static QString getExtension(const QUrl &fileUrl);
 signals:
   void artefactLoaded(const QUrl &fileUrl, QSharedPointer<Artefact> &artefact);
 
@@ -20,9 +21,8 @@ public slots:
 
 private:
   QHash<QUrl, QSharedPointer<Artefact>> artefact_dict;
-  bool isValidFile(const QUrl &fileUrl);
-  QString getExtension(const QUrl &fileUrl);
-  bool isValidArtefactType(QString extension);
+  static bool isValidFile(const QUrl &fileUrl);
+  static bool isValidArtefactType(QString extension);
 };
 
 #endif // ARTEFACT_MANAGER_H

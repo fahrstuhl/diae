@@ -9,35 +9,42 @@ Frame {
     property bool deleted: false
     property real relWidth: 1
     property real relHeight: 1
-    ColumnLayout{
+    ColumnLayout {
         anchors.fill: parent
-        MarkdownEditor{
+        MarkdownEditor {
             id: editor
             onUrlChanged: {
-                textArea.text = text;
-                textArea.decideIfEditable();
+                textArea.show()
             }
             onTextChanged: {
                 if (!textArea.activeFocus) {
-                    textArea.text = html;
+                    textArea.show()
                 }
             }
         }
-        RowLayout{
+        RowLayout {
+            id: controls
             Button {
+                id: edit_button
                 text: "edit"
                 onClicked: textArea.edit()
             }
 
             Button {
+                id: show_button
+                text: "show"
+                onClicked: textArea.show()
+            }
+
+            Button {
                 text: "open file"
-                onClicked: fileDialog.open();
+                onClicked: fileDialog.open()
             }
 
             TextArea {
                 id: urlArea
                 text: editor.url
-                Keys.onReturnPressed: editor.openArtefact(text);
+                Keys.onReturnPressed: editor.openArtefact(text)
             }
             Button {
                 text: "close editor"
@@ -48,47 +55,53 @@ Frame {
         FileDialog {
             id: fileDialog
             title: "Select file to edit."
-            //folder: editor.getPath()
+            folder: editor.getPath()
             selectExisting: false
             nameFilters: ["Markdown files: (*.md, *.txt)", "All files: (*)"]
             onAccepted: {
-                editor.openArtefact(fileDialog.fileUrl);
-                close();
+                editor.openArtefact(fileDialog.fileUrl)
+                close()
             }
             onRejected: {
-                close();
+                close()
             }
         }
 
-        ScrollView{
+        ScrollView {
             Layout.fillHeight: true
             Layout.fillWidth: true
             contentWidth: availableWidth
             contentHeight: availableHeight
             TextArea {
                 function edit() {
-                    focus=true;
-                    setPlaintext();
+                    focus = true
+                    setPlaintext()
+                }
+
+                function show() {
+                    setRichtext()
                 }
 
                 function setPlaintext() {
-                    textFormat = TextEdit.PlainText;
-                    text = editor.text;
-                    readOnly = false;
+                    textFormat = TextEdit.PlainText
+                    text = editor.text
+                    readOnly = false
+                    edit_button.visible = false
+                    show_button.visible = true
                 }
                 function setRichtext() {
-                    textFormat = TextEdit.RichText;
-                    text = editor.html;
-                    readOnly = true;
+                    textFormat = TextEdit.RichText
+                    text = editor.html
+                    readOnly = true
+                    edit_button.visible = true
+                    show_button.visible = false
                 }
                 function decideIfEditable() {
                     if (activeFocus) {
-                        setPlaintext();
+                        setPlaintext()
+                    } else {
+                        setRichtext()
                     }
-                    else {
-                        setRichtext();
-                    }
-
                 }
 
                 id: textArea
@@ -97,23 +110,24 @@ Frame {
                 wrapMode: TextEdit.Wrap
                 selectByMouse: true
                 Component.onCompleted: {
-                    edit();
+                    show()
                 }
 
                 onActiveFocusChanged: {
                     if (!activeFocus) {
-                        setRichtext();
+                        show()
                     }
                 }
 
-                onTextChanged:{
-                    if (activeFocus && textFormat == TextEdit.PlainText) {
+                onTextChanged: {
+                    if (activeFocus && !readOnly
+                            && textFormat == TextEdit.PlainText) {
                         editor.setText(text)
                     }
                 }
 
                 onLinkActivated: {
-                    console.log("Link ", link, " clicked.");
+                    editor.handleClickedLink(link)
                 }
             }
         }

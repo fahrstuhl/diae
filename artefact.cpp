@@ -47,8 +47,14 @@ void Artefact::setFile(QFile *file) {
   // it can only be moved on a rename
   m_file = file;
 };
-void Artefact::renameTo(const QUrl &newUrl){
-    // TODO: move file on rename and setFile to new file
+bool Artefact::renameTo(const QUrl &newUrl) {
+  // TODO: move file on rename and setFile to new file
+  if (m_file->rename(newUrl.path())) {
+    loadFromFile(newUrl);
+    return true;
+  } else {
+    return false;
+  }
 };
 void Artefact::readFromFile(){};
 void Artefact::saveToFile(){};

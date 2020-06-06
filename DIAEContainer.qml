@@ -10,134 +10,141 @@ Frame {
     property real relHeight: 1
     signal update
     function createObject(component) {
-        var node = component.createObject(root);
+        var node = component.createObject(root)
         if (node == null) {
             // Error Handling
-            console.log("Error creating object");
+            console.log("Error creating object")
         }
-        nodes.push(node);
+        nodes.push(node)
         //node.widthChanged.connect(update);
         //node.heightChanged.connect(update);
-        node.deletedChanged.connect(update);
-        node.parent = layout;
+        node.deletedChanged.connect(update)
+        node.parent = layout
     }
 
     function createEditorObjects() {
-        var component = Qt.createComponent("QMLMarkdownEditor.qml");
-        createObject(component);
+        var component = Qt.createComponent("QMLMarkdownEditor.qml")
+        createObject(component)
     }
     function createContainerObjects() {
-        var component = Qt.createComponent("DIAEContainer.qml");
-        createObject(component);
+        var component = Qt.createComponent("DIAEContainer.qml")
+        createObject(component)
     }
 
-    function calculateRelativeSize(state){
-        var n = nodes.length;
-        for (var i=0; i < nodes.length; i++) {
-            switch(state){
+    function calculateRelativeSize(state) {
+        var n = nodes.length
+        for (var i = 0; i < nodes.length; i++) {
+            switch (state) {
             case 0:
-                nodes[i].relHeight = 1;
-                nodes[i].relWidth = 1/n;
-                break;
+                nodes[i].relHeight = 1
+                nodes[i].relWidth = 1 / n
+                break
             case 1:
-                nodes[i].relHeight = 1/n;
-                nodes[i].relWidth = 1;
-                break;
+                nodes[i].relHeight = 1 / n
+                nodes[i].relWidth = 1
+                break
             case 2:
-                nodes[i].relHeight = 1;
-                nodes[i].relWidth = 1;
-                break;
+                nodes[i].relHeight = 1
+                nodes[i].relWidth = 1
+                break
             }
-            nodes[i].Layout.preferredWidth = nodes[i].relWidth * availableWidth;
-            nodes[i].Layout.preferredHeight = nodes[i].relHeight * availableHeight;
-            nodes[i].Layout.maxWidth = 0.9*availableWidth;
-            nodes[i].Layout.maxHeight = 0.9*availableHeight;
+
+            nodes[i].Layout.preferredWidth = nodes[i].relWidth * availableWidth
+            nodes[i].Layout.preferredHeight = nodes[i].relHeight
+                    * (availableHeight - controller.height)
+            nodes[i].Layout.maxWidth = 0.9 * availableWidth
+            nodes[i].Layout.maxHeight = 0.9 * (availableHeight - controller.height)
             if (state == 2) {
-                console.log(nodes[i].Layout.preferredWidth, nodes[i].Layout.preferredHeight);
+                console.log(nodes[i].Layout.preferredWidth,
+                            nodes[i].Layout.preferredHeight)
             }
         }
     }
 
     onUpdate: {
-        console.log("state:", layout.state);
+        console.log("state:", layout.state)
         for (var i = 0; i < nodes.length; i++) {
-            console.log("#", i, "; deleted: ", nodes[i].deleted, "; item: ", nodes[i], "; type: ", typeof nodes[i], "; parent: ", nodes[i].parent, "; layout: ", layout);
+            console.log("#", i, "; deleted: ", nodes[i].deleted, "; item: ",
+                        nodes[i], "; type: ", typeof nodes[i], "; parent: ",
+                        nodes[i].parent, "; layout: ", layout)
             if (nodes[i].deleted) {
-                nodes[i].destroy();
-                nodes.splice(i,1);
-                i--;
-                continue;
+                nodes[i].destroy()
+                nodes.splice(i, 1)
+                i--
+                continue
             }
-            switch(layout.state) {
+            switch (layout.state) {
             case 0:
-                console.log("row: ", row);
-                nodes[i].parent = row;
-                break;
+                console.log("row: ", row)
+                nodes[i].parent = row
+                break
             case 1:
-                console.log("column: ", column);
-                nodes[i].parent = column;
-                break;
+                console.log("column: ", column)
+                nodes[i].parent = column
+                break
             case 2:
-                console.log("stack: ", stack);
-                nodes[i].parent = stack;
-                break;
+                console.log("stack: ", stack)
+                nodes[i].parent = stack
+                break
             }
         }
-        calculateRelativeSize(layout.state);
+        calculateRelativeSize(layout.state)
     }
 
     Component.onDestruction: {
         for (var i = 0; i < nodes.length; i++) {
-            nodes[i].destroy();
+            nodes[i].destroy()
         }
     }
 
-    RowLayout {
-        anchors.top: parent.top
-        id: controller
-        ComboBox {
-            model: ["row", "column", "stack"]
-            onActivated: {
-                layout.state = index;
-                top.update();
+    contentItem: Control {
+        RowLayout {
+            anchors.top: parent.top
+            id: controller
+            ComboBox {
+                model: ["row", "column", "stack"]
+                onActivated: {
+                    layout.state = index
+                    top.update()
+                }
+            }
+            Button {
+                text: "editor"
+                onClicked: {
+                    top.createEditorObjects()
+                    top.update()
+                }
+            }
+            Button {
+                text: "container"
+                onClicked: {
+                    top.createContainerObjects()
+                    top.update()
+                }
+            }
+            Button {
+                text: "close container"
+                onClicked: top.deleted = true
             }
         }
-        Button {
-            text: "editor"
-            onClicked: {
-                top.createEditorObjects();
-                top.update()
+        Control {
+            anchors.top: controller.bottom
+            // anchors.bottom: parent.bottom
+            // width: availableWidth
+            property int state: 0
+            id: layout
+            RowLayout {
+                id: row
+                //anchors.fill: parent
             }
-        }
-        Button {
-            text: "container"
-            onClicked: {
-                top.createContainerObjects();
-                top.update()
+            ColumnLayout {
+                id: column
+                //anchors.fill: parent
             }
-        }
-        Button {
-            text: "close container"
-            onClicked: top.deleted = true
-        }
-    }
-    Item {
-        anchors.top: controller.bottom
-        anchors.bottom: parent.bottom
-        width: availableWidth
-        property int state: 0
-        id: layout
-        RowLayout{
-            id: row
-            anchors.fill: parent
-        }
-        ColumnLayout{
-            id: column
-            anchors.fill: parent
-        }
-        StackLayout{
-            id: stack
-            anchors.fill: parent
+            StackLayout {
+                id: stack
+                //anchors.fill: parent
+            }
         }
     }
 }
